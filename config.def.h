@@ -31,10 +31,14 @@ static int log_level = WLR_ERROR;
 
 /* Autostart */
 static const char *const autostart[] = {
-        "wbg", "/path/to/your/image", NULL,
-        NULL /* terminate */
+    "pipewire", NULL,
+    "wireplumber", NULL,
+    "wl-paste", "--watch", "cliphist", "store", NULL,
+    "waybar", NULL,
+    "kanata", "--cfg", "/home/leon/.config/kanata/kanata.kbd", NULL,
+    "syncthing", "--no-browser", "--no-restart", NULL,
+    NULL /* terminate */
 };
-
 static const Rule rules[] = {
 	/* app_id             title       tags mask     isfloating   isterm   noswallow   monitor */
 	{ "Gimp_EXAMPLE",     NULL,       0,            1,           0,       0,          -1 }, /* Start on currently visible tags floating, not tiled */
@@ -68,11 +72,13 @@ static const struct xkb_rule_names xkb_rules = {
 	/* example:
 	.options = "ctrl:nocaps",
 	*/
+  .layout = "eu",
 	.options = NULL,
+
 };
 
 static const int repeat_rate = 25;
-static const int repeat_delay = 600;
+static const int repeat_delay = 300;
 
 /* Trackpad */
 static const int tap_to_click = 1;
@@ -118,7 +124,7 @@ LIBINPUT_CONFIG_TAP_MAP_LMR -- 1/2/3 finger tap maps to left/middle/right
 static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TAP_MAP_LRM;
 
 /* If you want to use the windows key for MODKEY, use WLR_MODIFIER_LOGO */
-#define MODKEY WLR_MODIFIER_ALT
+#define MODKEY WLR_MODIFIER_LOGO
 
 #define TAGKEYS(KEY,SKEY,TAG) \
 	{ MODKEY,                    KEY,            view,            {.ui = 1 << TAG} }, \
@@ -127,39 +133,26 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 	{ MODKEY|WLR_MODIFIER_CTRL|WLR_MODIFIER_SHIFT,SKEY,toggletag, {.ui = 1 << TAG} }
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/fish", "-c", cmd, NULL } }
 
 /* commands */
-static const char *termcmd[] = { "foot", NULL };
-static const char *menucmd[] = { "wmenu-run", NULL };
-
+static const char *menucmd[] = { "rofi", "-show", "drun", NULL };
+static const char *wlogout[]  = { "wlogout", NULL };
+static const char *cliphist[] = { "/bin/sh", "-c", "cliphist list | rofi -dmenu | cliphist decode | wl-copy", NULL };
+static const char *screenshot[] = { "rofi-screenshot", NULL };
 static const Key keys[] = {
 	/* Note that Shift changes certain key codes: 2 -> at, etc. */
 	/* modifier                  key                  function          argument */
-	{ MODKEY,                    XKB_KEY_p,           spawn,            {.v = menucmd} },
-	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_Return,      spawn,            {.v = termcmd} },
+	{ MODKEY,                    XKB_KEY_d,           spawn,            {.v = menucmd} },
 	{ MODKEY,                    XKB_KEY_j,           focusstack,       {.i = +1} },
 	{ MODKEY,                    XKB_KEY_k,           focusstack,       {.i = -1} },
 	{ MODKEY,                    XKB_KEY_i,           incnmaster,       {.i = +1} },
-	{ MODKEY,                    XKB_KEY_d,           incnmaster,       {.i = -1} },
+	{ MODKEY,                    XKB_KEY_p,           incnmaster,       {.i = -1} },
 	{ MODKEY,                    XKB_KEY_h,           setmfact,         {.f = -0.05f} },
 	{ MODKEY,                    XKB_KEY_l,           setmfact,         {.f = +0.05f} },
-	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_h,           incgaps,          {.i = +1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_l,           incgaps,          {.i = -1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_SHIFT,    XKB_KEY_H,         incogaps,      {.i = +1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_SHIFT,    XKB_KEY_L,         incogaps,      {.i = -1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_CTRL,     XKB_KEY_h,         incigaps,      {.i = +1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_CTRL,     XKB_KEY_l,         incigaps,      {.i = -1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_0,           togglegaps,        {0} },
+  { MODKEY,                    XKB_KEY_c,           spawn,          {.v = cliphist} },
+  { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_p,           spawn,          {.v = screenshot} },
 	{ MODKEY|WLR_MODIFIER_LOGO|WLR_MODIFIER_SHIFT,    XKB_KEY_parenright,defaultgaps,    {0} },
-	{ MODKEY,                    XKB_KEY_y,           incihgaps,        {.i = +1 } },
-	{ MODKEY,                    XKB_KEY_o,           incihgaps,        {.i = -1 } },
-	{ MODKEY|WLR_MODIFIER_CTRL,  XKB_KEY_y,           incivgaps,        {.i = +1 } },
-	{ MODKEY|WLR_MODIFIER_CTRL,  XKB_KEY_o,           incivgaps,        {.i = -1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_y,           incohgaps,        {.i = +1 } },
-	{ MODKEY|WLR_MODIFIER_LOGO,  XKB_KEY_o,           incohgaps,        {.i = -1 } },
-	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_Y,           incovgaps,        {.i = +1 } },
-	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_O,           incovgaps,        {.i = -1 } },
 	{ MODKEY,                    XKB_KEY_Return,      zoom,             {0} },
 	{ MODKEY,                    XKB_KEY_Tab,         view,             {0} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_c,           killclient,       {0} },
@@ -186,13 +179,25 @@ static const Key keys[] = {
 	TAGKEYS(          XKB_KEY_7, XKB_KEY_ampersand,                     6),
 	TAGKEYS(          XKB_KEY_8, XKB_KEY_asterisk,                      7),
 	TAGKEYS(          XKB_KEY_9, XKB_KEY_parenleft,                     8),
-	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_q,           quit,             {0} },
+
+    { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_q,                spawn,          {.v = wlogout} },
+	{ MODKEY,                    XKB_KEY_Tab,         view,             {0} },
 
 	/* Ctrl-Alt-Backspace and Ctrl-Alt-Fx used to be handled by X server */
 	{ WLR_MODIFIER_CTRL|WLR_MODIFIER_ALT,XKB_KEY_Terminate_Server, quit, {0} },
 	/* Ctrl-Alt-Fx is used to switch to another VT, if you don't know what a VT is
 	 * do not remove them.
 	 */
+  { 0,                         XKB_KEY_XF86AudioRaiseVolume, spawn,      SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%+") },
+    { 0,                         XKB_KEY_XF86AudioLowerVolume, spawn,      SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 2%-") },
+    { 0,                         XKB_KEY_XF86AudioMute,        spawn,      SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle") },
+    { 0,                         XKB_KEY_XF86AudioPlay,        spawn,      SHCMD("playerctl play-pause") },
+    { 0,                         XKB_KEY_XF86AudioStop,        spawn,      SHCMD("playerctl stop") },
+    { 0,                         XKB_KEY_XF86AudioPrev,        spawn,      SHCMD("playerctl previous") },
+    { 0,                         XKB_KEY_XF86AudioNext,        spawn,      SHCMD("playerctl next") },
+    { 0,                         XKB_KEY_XF86MonBrightnessUp,  spawn,      SHCMD("brightnessctl s 2%+") },
+    { 0,                         XKB_KEY_XF86MonBrightnessDown,spawn,      SHCMD("brightnessctl s 2%-") },
+
 #define CHVT(n) { WLR_MODIFIER_CTRL|WLR_MODIFIER_ALT,XKB_KEY_XF86Switch_VT_##n, chvt, {.ui = (n)} }
 	CHVT(1), CHVT(2), CHVT(3), CHVT(4), CHVT(5), CHVT(6),
 	CHVT(7), CHVT(8), CHVT(9), CHVT(10), CHVT(11), CHVT(12),
