@@ -7,13 +7,13 @@
 static const int sloppyfocus               = 1;  /* focus follows mouse */
 static const int bypass_surface_visibility = 0;  /* 1 means idle inhibitors will disable idle tracking even if it's surface isn't visible  */
 static const int enablegaps                = 1;  /* 1 means gaps are enabled */
-static const int smartgaps                 = 0;  /* 1 means no outer gap when there is only one window */
+static const int smartgaps                 = 1;  /* 1 means no outer gap when there is only one window */
 static const int monoclegaps               = 0;  /* 1 means outer gaps in monocle layout */
-static const unsigned int borderpx         = 1;  /* border pixel of windows */
-static const unsigned int gappih           = 10; /* horiz inner gap between windows */
-static const unsigned int gappiv           = 10; /* vert inner gap between windows */
-static const unsigned int gappoh           = 10; /* horiz outer gap between windows and screen edge */
-static const unsigned int gappov           = 10; /* vert outer gap between windows and screen edge */
+static const unsigned int borderpx         = 4;  /* border pixel of windows */
+static const unsigned int gappih           = 4; /* horiz inner gap between windows */
+static const unsigned int gappiv           = 4; /* vert inner gap between windows */
+static const unsigned int gappoh           = 4; /* horiz outer gap between windows and screen edge */
+static const unsigned int gappov           = 4; /* vert outer gap between windows and screen edge */
 static const float rootcolor[]             = COLOR(0x222222ff);
 static const float bordercolor[]           = COLOR(0x444444ff);
 static const float focuscolor[]            = COLOR(0x005577ff);
@@ -32,9 +32,9 @@ static int log_level = WLR_ERROR;
 /* Autostart */
 static const char *const autostart[] = {
     "pipewire", NULL,
-    "pipewire-pulse", NULL,
-    "wireplumber", NULL,
+    "brightnessctl", "set", "30%", NULL,
     "wl-paste", "--watch", "cliphist", "store", NULL,
+    "swayidle", "-w", "timeout", "300", "swaylock", NULL,
     "waybar", NULL,
     "kanata", "--cfg", "/home/leon/.config/kanata/kanata.kbd", NULL,
     "syncthing", "--no-browser", "--no-restart", NULL,
@@ -44,6 +44,7 @@ static const Rule rules[] = {
 	/* app_id             title       tags mask     isfloating   isterm   noswallow   monitor */
 	{ "Gimp_EXAMPLE",     NULL,       0,            1,           0,       0,          -1 }, /* Start on currently visible tags floating, not tiled */
 	{ "firefox_EXAMPLE",  NULL,       1 << 8,       0,           0,       0,          -1 }, /* Start on ONLY tag "9" */
+  { "foot", NULL, 0, 0, 1, 0, -1 },
     /* default/example rule: can be changed but cannot be eliminated; at least one rule must exist */
 };
 
