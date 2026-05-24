@@ -7,8 +7,8 @@ pkgs.stdenv.mkDerivation {
   src = pkgs.fetchFromGitHub {
     owner  = "L-PDufour";
     repo   = "dwl";
-    rev    = "a88daf8";
-    hash   = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+    rev    = "fc7f4e6";
+    hash   = "sha256-1z2hjdk1agqxc99p3phc51hgxmd19rpzp4vy08fhj9x7q01g7g65=";
   };
 
   nativeBuildInputs = with pkgs; [
