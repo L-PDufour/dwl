@@ -8,7 +8,7 @@ pkgs.stdenv.mkDerivation {
     owner  = "L-PDufour";
     repo   = "dwl";
     rev    = "fc7f4e6";
-    hash   = "sha256-1z2hjdk1agqxc99p3phc51hgxmd19rpzp4vy08fhj9x7q01g7g65=";
+    hash   = "sha256-xbzzAsCnJwkdAn6T+29OodX+YCgM3nFTYh0/FWaTUPw=";
   };
 
   nativeBuildInputs = with pkgs; [
@@ -25,10 +25,10 @@ pkgs.stdenv.mkDerivation {
     libxkbcommon
     pixman
     # XWayland / X11 support
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libxcb
-    xorg.xcbutilwm
+    libx11
+    libxcursor
+    libxcb
+    libxcb-wm
   ];
 
   makeFlags = [ "PREFIX=$(out)" ];
