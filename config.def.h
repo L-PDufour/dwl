@@ -31,13 +31,6 @@ static int log_level = WLR_ERROR;
 
 /* Autostart */
 static const char *const autostart[] = {
-    "pipewire", NULL,
-    "brightnessctl", "set", "30%", NULL,
-    "wl-paste", "--watch", "cliphist", "store", NULL,
-    "swayidle", "-w", "timeout", "300", "swaylock", NULL,
-    "waybar", NULL,
-    "kanata", "--cfg", "/home/leon/.config/kanata/kanata.kbd", NULL,
-    "syncthing", "--no-browser", "--no-restart", NULL,
     NULL /* terminate */
 };
 static const Rule rules[] = {
@@ -135,7 +128,7 @@ static const enum libinput_config_tap_button_map button_map = LIBINPUT_CONFIG_TA
 	{ MODKEY|WLR_MODIFIER_CTRL|WLR_MODIFIER_SHIFT,SKEY,toggletag, {.ui = 1 << TAG} }
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
-#define SHCMD(cmd) { .v = (const char*[]){ "/bin/fish", "-c", cmd, NULL } }
+#define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
 static const char *menucmd[] = { "rofi", "-show", "drun", NULL };
@@ -159,7 +152,7 @@ static const Key keys[] = {
 	{ MODKEY,                    XKB_KEY_Tab,         view,             {0} },
 	{ MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_c,           killclient,       {0} },
 	{ MODKEY,                    XKB_KEY_t,           setlayout,        {.v = &layouts[0]} },
-{ MODKEY,                    XKB_KEY_b,          togglebar,      {0} },
+  { MODKEY,                    XKB_KEY_b,           togglebar,      {0} },
 	{ MODKEY,                    XKB_KEY_f,           setlayout,        {.v = &layouts[1]} },
 	{ MODKEY,                    XKB_KEY_m,           setlayout,        {.v = &layouts[2]} },
 	{ MODKEY,                    XKB_KEY_space,       setlayout,        {0} },
@@ -183,8 +176,7 @@ static const Key keys[] = {
 	TAGKEYS(          XKB_KEY_8, XKB_KEY_asterisk,                      7),
 	TAGKEYS(          XKB_KEY_9, XKB_KEY_parenleft,                     8),
 
-    { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_q,                spawn,          {.v = wlogout} },
-	{ MODKEY,                    XKB_KEY_Tab,         view,             {0} },
+  { MODKEY|WLR_MODIFIER_SHIFT, XKB_KEY_q,                spawn,          {.v = wlogout} },
 
 	/* Ctrl-Alt-Backspace and Ctrl-Alt-Fx used to be handled by X server */
 	{ WLR_MODIFIER_CTRL|WLR_MODIFIER_ALT,XKB_KEY_Terminate_Server, quit, {0} },
